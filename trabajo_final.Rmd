@@ -1,0 +1,421 @@
+---
+title: "Proyecto Final IAUII"
+description: |
+  Trabajo Final de Romina Violante de la materia de Analisis Urbano II de la MEU
+author:
+  - name: Romina Violante 
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Microcentro porteño: propiedades en venta desde 2015 a 2019
+
+** Presentación del tema **
+
+Analizar los inmuebles en venta de la ciudad de Buenos Aires durante el período 2015 a 2019, en específico, observando el microcentro porteño durante el período y comparandolo con los demás barrios. Este recorte espacial y temporal surge por la necesidad de estudiar el fenómeno del vaciamiento porteño desde 2015 ya que este fue el tema que elegí para desarrollar en mi tesis. Creo que estos datos podrían ser de ayuda para explicar el fenómeno.
+
+** Ubicación **
+
+La ubicación de los datos de este trabajo serán en la Ciudad Autónoma de Buenos Aires y se estudiarán en relación a su microcentro.
+
+** Fuentes **
+
+Todos los datos de Trabajo fueron importados del portal de datos abiertos de la Ciudad de Buenos Aires: https://data.buenosaires.gob.ar/dataset/
+Los mismos son:
+
+- Departamentos en venta 2015
+- Departamentos en venta 2016
+- Departamentos en venta 2017
+- Departamentos en venta 2018
+- Departamentos en venta 2019
+
+
+** Estudio de la información adquirida **
+
+Primero activaré las librerías que necesito para trabajar.
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(sf)
+library(dplyr)
+```
+
+Para empezar haré una comparación de la cantidad de inmuebles vendidos en la Ciudad de Buenos Aires desde 2015 a 2019.
+Lo primero que haré será abrir mis datasets para ver el tipo de información con la que cuento y realizar la limpieza y orden pertinente de los datos:
+
+** AÑO 2015 **
+
+```{r}
+ventas_2015<-st_read("data/deptos_2015.shp",
+                 stringsAsFactors =TRUE,
+                 options ="ENCODING=latin1")
+```
+
+```{r}
+summary (ventas_2015)
+```
+
+Me quedo con la información que considero importante y ordeno nombres:
+```{r}
+ventas_2015_limpio <- select(ventas_2015, DIRECCION, BARRIOS, geometry)
+```
+
+```{r}
+summary(ventas_2015_limpio)
+```
+
+```{r}
+ventas_2015_limpio$BARRIOS <- sub("MONTSERRAT", "MONSERRAT", ventas_2015_limpio$BARRIOS)
+```
+
+```{r}
+grafico_2015 <- ventas_2015_limpio %>% st_drop_geometry()
+```
+
+Calculo la cantidad de departamentos en venta:
+```{r}
+grafico_2015 <- grafico_2015 %>% 
+  group_by(BARRIOS) %>% 
+  summarise(DIRECCION=n()) %>% 
+  rename(CANTIDAD_VENTAS=DIRECCION)
+```
+
+
+** AÑO 2016 **
+
+```{r}
+ventas_2016<-st_read("data/2016_deptos_venta.shp",
+                 stringsAsFactors =TRUE,
+                 options ="ENCODING=latin1")
+
+```
+
+Vuelvo a hacer mi selección de datos:
+```{r}
+ventas_2016_limpio <- select(ventas_2016, DIRECCION, BARRIO_1) 
+```
+
+```{r}
+ventas_2016_limpio <- rename (ventas_2016_limpio, BARRIOS=BARRIO_1)
+```
+
+```{r}
+ventas_2016_limpio <- ventas_2016_limpio %>% 
+    mutate(BARRIOS = sub("NUÃEZ", "NUNEZ", BARRIOS))
+    
+```
+
+```{r}
+ventas_2016_limpio <- ventas_2016_limpio %>% st_drop_geometry()
+```
+
+Calculo la cantidad de departamentos en venta:
+
+```{r}
+grafico_2016 <- ventas_2016_limpio %>% 
+  group_by(BARRIOS) %>% 
+  summarise(DIRECCION=n()) %>% 
+  rename(CANTIDAD_VENTAS=DIRECCION)
+```
+
+```{r}
+nueva_fila <- data.frame(
+  BARRIOS = "VILLA RIACHUELO",
+  CANTIDAD_VENTAS = 0)
+```
+
+```{r}
+grafico_2016 <- rbind(grafico_2016, nueva_fila)
+```
+
+
+** AÑO 2017 **
+
+```{r}
+ventas_2017<-st_read("data/Departamentos_venta_2017.shp",
+                 stringsAsFactors =TRUE,
+                 options ="ENCODING=latin1")
+
+```
+
+Me quedo con la información que considero importante y ordeno nombres:
+
+```{r}
+ventas_2017_limpio <-  select(ventas_2017,MES, BARRIO)
+```
+
+
+```{r}
+ventas_2017_limpio <-rename ( ventas_2017_limpio, BARRIOS=BARRIO) %>% 
+  mutate(BARRIOS = sub("NUÃEZ", "NUNEZ", BARRIOS))   
+```
+
+```{r}
+ventas_2017_limpio <- ventas_2017_limpio %>% st_drop_geometry()
+```
+
+Calculo la cantidad de departamentos en venta:
+
+```{r}
+grafico_2017 <- ventas_2017_limpio %>% 
+  group_by(BARRIOS) %>% 
+  summarise(MES=n()) %>% 
+  rename(CANTIDAD_VENTAS=MES)
+```
+
+
+** AÑO 2018 **
+
+```{r}
+ventas_2018<-st_read("data/Departamentos_venta_2018.shp",
+                 stringsAsFactors =TRUE,
+                 options ="ENCODING=latin1")
+
+```
+
+Me ORDENO la información que considero importante:
+
+```{r}
+ventas_2018_limpio <- select(ventas_2018, DIRECCION, BARRIO_1)
+```
+
+```{r}
+ventas_2018_limpio <- rename (ventas_2018_limpio, BARRIOS=BARRIO_1)
+```
+
+```{r}
+ventas_2018_limpio <- ventas_2018_limpio %>% 
+    mutate(BARRIOS = sub("NUÃÃ¶Â£âÂªEZ", "NUNEZ", BARRIOS)) %>% 
+    mutate(BARRIOS = sub("NUâÃ¦EZ", "NUNEZ", BARRIOS)) %>% 
+    mutate(BARRIOS = sub("NUÃÃ¶Â£âÃ³âÃ¶âÃ§ââEZ", "NUNEZ", BARRIOS))
+    
+```
+
+```{r}
+ventas_2018_limpio <- ventas_2018_limpio %>% st_drop_geometry()
+```
+
+Calculo la cantidad de departamentos en venta:
+
+```{r}
+grafico_2018 <- ventas_2018_limpio %>% 
+  group_by(BARRIOS) %>% 
+  summarise(DIRECCION=n()) %>% 
+  rename(CANTIDAD_VENTAS=DIRECCION)
+```
+
+** AÑO 2019 **
+
+```{r}
+ventas_2019<-st_read("data/Departamentos_venta_2019.shp",
+                 stringsAsFactors =TRUE,
+                 options ="ENCODING=latin1")
+
+```
+
+Selecciono y ordeno mi información:
+
+```{r}
+ventas_2019 <- filter(ventas_2019, OPERACION == "VTA")
+```
+
+```{r}
+ventas_2019_limpio <- select(ventas_2019, DIRECCION, BARRIOS_1, geometry)
+```
+
+```{r}
+ventas_2019_limpio <- rename (ventas_2019_limpio, BARRIOS=BARRIOS_1, CANTIDAD_VENTAS=DIRECCION)
+```
+
+```{r}
+ventas_2019_limpio <- ventas_2019_limpio %>%
+  filter(!is.na(BARRIOS))
+```
+
+```{r}
+ventas_2019_limpio <- ventas_2019_limpio %>%
+  mutate(BARRIOS = sub("FLORES NORTE", "FLORES", BARRIOS)) %>%
+  mutate(BARRIOS = sub("FLORES SUR", "FLORES", BARRIOS)) %>%
+  mutate(BARRIOS = sub("BARRACAS ESTE", "BARRACAS", BARRIOS)) %>%
+  mutate(BARRIOS = sub("BARRACAS OESTE", "BARRACAS", BARRIOS)) %>%
+  mutate(BARRIOS = sub("NUÃâEZ", "NUÑEZ", BARRIOS)) %>%
+  mutate(BARRIOS = sub("NUÃEZ", "NUÑEZ", BARRIOS)) %>%
+  mutate(BARRIOS = sub("VILLA DEVOTO NORTE", "VILLA DEVOTO", BARRIOS)) %>%
+  mutate(BARRIOS = sub("VILLA DEVOTO SUR", "VILLA DEVOTO", BARRIOS)) %>%
+  mutate(BARRIOS = sub("MONTSERRAT", "MONSERRAT", BARRIOS))
+
+```
+
+```{r}
+ventas_2019_grafico <- ventas_2019_limpio %>% st_drop_geometry()
+```
+
+
+Calculo la cantidad de departamentos en venta:
+
+```{r}
+grafico_2019 <- ventas_2019_grafico %>% 
+  group_by(BARRIOS) %>% 
+  summarise(DIRECCION=n()) %>% 
+  rename(CANTIDAD_VENTAS=DIRECCION)
+```
+
+Ahora para mi comparación saco un promedio de la cantidad de departamentos vendidos por año y creo mi gráfico:
+
+```{r}
+promedio_2015 <- mean(grafico_2015$CANTIDAD_VENTAS)
+promedio_2016 <- mean(grafico_2016$CANTIDAD_VENTAS)
+promedio_2017 <- mean(grafico_2017$CANTIDAD_VENTAS)
+promedio_2018 <- mean(grafico_2018$CANTIDAD_VENTAS)
+promedio_2019 <- mean(grafico_2019$CANTIDAD_VENTAS)
+```
+
+```{r}
+promedios <- c(promedio_2015, promedio_2016, promedio_2017, promedio_2018, promedio_2019)
+
+```
+
+```{r}
+años <- c("2015", "2016", "2017", "2018", "2019")
+
+promedios <- c(promedio_2015, promedio_2016, promedio_2017, promedio_2018, promedio_2019)
+
+dptos_2015_2019 <- data.frame(Año = años, Promedio = promedios)
+
+ggplot(dptos_2015_2019, aes(x = Año, y = Promedio)) +
+  geom_bar(stat = "identity", fill = scales::viridis_pal(option = "D")(5)) +  
+  geom_text(aes(label = sprintf("%.2f", Promedio)), vjust = -0.5, size = 3) +
+  geom_line(aes(group = 1), color = "red", size=2) +
+  labs(title = "Promedios de Departamentos en Venta por Año",
+       x = "Año",
+       y = "Promedio de departamentos en venta") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 10),  
+        axis.text.y = element_text(size = 10),  
+        axis.title = element_text(size = 12))   
+```
+
+
+Se observa como crece la cantidad de departamentos en venta a lo largo de estos años.
+
+A partir de este gráfico decidí quedarme con el 2015 y el 2019 para poder estudiar sus datos más detenidamente:
+
+En cuanto al 2015, hago un pequeño estudio de las propiedades en venta según barrios. Mis barrios críticos serán Monserrat, San Nicolás y Retiro por tomar la zona del microcentro porteño.
+
+```{r}
+grafico_2015$Resaltar <- ifelse(grafico_2015$BARRIOS %in% c("RETIRO", "SAN NICOLAS", "MONSERRAT"), "Resaltar", "No Resaltar")
+
+ggplot(grafico_2015, aes(x = reorder(BARRIOS, CANTIDAD_VENTAS), y = CANTIDAD_VENTAS, fill = Resaltar)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("Resaltar" = "red", "No Resaltar" = "blue")) + 
+  labs(title = "Cantidad de departamentos en venta por barrios en 2015", x = "Barrios", y = "Deptos en venta") +
+  coord_flip() +
+  theme( 
+    axis.text.x = element_text(colour = "gray25", size = 5, angle = 90),
+    axis.text.y = element_text(colour = "gray25", size = 5)
+  ) +
+  guides(fill = FALSE)  
+
+```
+
+Puedo observar que durante este año Recoleta fue el barrio con mayor cantidad de departamentos en venta y que recién en el octavo puesto aparece Retiro. En los puestos 15 y 16 estarán San Nicolás y Monserrat más cercanos a la mitad de la tabla.
+
+Observemoslo en un mapa:
+
+```{r}
+Barrios <-st_read("data/barrios_wgs84.shp",
+                 stringsAsFactors =TRUE,
+                 options ="ENCODING=UTF-8")
+```
+```{r}
+Barrios_limpio <- Barrios %>% 
+  rename ("BARRIOS" = "BARRIO") %>% 
+  select (BARRIOS, geometry)
+```
+
+```{r}
+Tabla_grafico <- left_join (grafico_2015, Barrios_limpio, by="BARRIOS")
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = Tabla_grafico, aes(geometry= geometry, fill= CANTIDAD_VENTAS), color = NA) +
+    labs(title = "Deparatamentos en venta en los barrios de Caba en 2015",
+         subtitle = "Densidad de propiedades",
+         fill = "Cantidad",
+         caption= "Fuente: Gobierno de la Ciudad de Buenos Aires")+
+  geom_sf_text(data = Tabla_grafico, aes(geometry=geometry,label = BARRIOS), size=1, colour = "black") +
+  theme_void() +
+  scale_fill_distiller(palette = "Spectral")
+```
+
+Aquí se ve claramente una mayor cantidad de propiedades en venta hacia el norte de la ciudad.
+
+Intentaré reproducir lo mismo para el 2019:
+
+```{r}
+
+grafico_2019$Resaltar <- ifelse(grafico_2019$BARRIOS %in% c("RETIRO", "SAN NICOLAS", "MONSERRAT"), "Resaltar", "No Resaltar")
+
+ggplot(grafico_2019, aes(x = reorder(BARRIOS, CANTIDAD_VENTAS), y = CANTIDAD_VENTAS, fill = Resaltar)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("Resaltar" = "red", "No Resaltar" = "blue")) + 
+  labs(title = "Cantidad de departamentos en venta por barrios en 2019", x = "Barrios", y = "Deptos en venta") +
+  coord_flip() +
+  theme( 
+    axis.text.x = element_text(colour = "gray25", size = 5, angle = 90),
+    axis.text.y = element_text(colour = "gray25", size = 5)
+  )+
+   guides(fill = FALSE)
+
+```
+
+Durante este año, vemos como el barrio con mayor cantidad de departamentos en venta es Palermo, que reemplazo a Recoleta. Retiro paso al puesto n°12, seguido por San Nicolás y Monserrat en el puesto 16.
+
+Veamos las propiedades en venta en un mapa:
+
+
+```{r}
+Tabla_grafico_2019 <- left_join (grafico_2019, Barrios_limpio, by="BARRIOS")
+```
+
+
+```{r}
+ggplot()+
+  geom_sf(data=Barrios_limpio)+
+  geom_sf(data = ventas_2019_limpio, color = "forestgreen", alpha = 0.4) +
+  labs(title = "Departamentos en venta por Barrios en 2019",
+       subtitle = "Ciudad Autónoma de Buenos Aires",
+       caption= "Fuente: Gobierno de la Ciudad de Buenos Aires") +
+  theme_void() +
+  theme(plot.margin = margin(0.25, 1, 0.25, 0.1, "cm"),
+                     plot.caption=element_text(face = "italic", colour = "gray35",size=6),
+                     title=element_text(size=10, face = "bold"))
+```
+
+Veamos el crecieminto en cuanto a la cantidad, cuando se observa en el mapa coroplético se puede percibir más claramente la mayor cantidad de propiedades en el sector norte.
+
+```{r}
+ggplot() +
+  geom_sf(data = Tabla_grafico_2019, aes(geometry= geometry, fill= CANTIDAD_VENTAS), color = NA) +
+    labs(title = "Deparatamentos en venta en los barrios de Caba en 2019",
+         subtitle = "Densidad de propiedades",
+         fill = "Cantidad",
+         caption= "Fuente: Gobierno de la Ciudad de Buenos Aires")+
+  geom_sf_text(data = Tabla_grafico_2019, aes(geometry=geometry,label = BARRIOS), size=1, colour = "black") +
+  theme_void() +
+  scale_fill_distiller(palette = "Spectral")
+```
+
+Podemos percibir pequeños cambios en cuanto a los barrios con mayores propiedades en venta en comparación con 2015. Hay una baja en cuanto a los barrios pertenecientes al microcentro y un cambio en el barrio considerado puntero. Este trabajo servirá de puntapie para evaluar estos motivos, si es que se trata de una estrategia de venta, esperando a que los precios de las propiedades suban o si hay un cambio en los barrios más demandados. Lo que se puede decir es que la oferta fue creciendo a lo largo del tiempo.
+
+
+
+
+
+
