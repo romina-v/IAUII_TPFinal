@@ -1,12 +1,17 @@
 name: "IAUII_TPFinal"
 title: "Instrumentos de Análisis Urbano II - Romina Violante"
-description: |
-  Instrumentos de Análisis Urbano II - Romina Violante
-output_dir: "docs"
+description: Trabajo Final de Romina Violante de la materia Instrumnetos de Análisis Urbano IIde MEU
+output_dir : "docs"
 navbar:
+  logo:
+    image: https://img.freepik.com/vector-premium/continuo-dibujo-linea-programador-nina-feliz-que-muestra-codigo-programacion-computadora-portatil-su-mano-concepto-codigo-programacion-ilustracion-grafica-vector-diseno-dibujo-sola-linea_612079-1555.jpg?w=740
+    
   right:
     - text: "Home"
       href: index.html
     - text: "About"
       href: about.html
+  left: 
+    - text: "Trabajo Final"
+    - href: trabajo_final.Rmd
 output: distill::distill_article
