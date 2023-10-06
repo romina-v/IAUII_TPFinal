@@ -1,0 +1,4 @@
+data/Departamentos_venta_2019.dbf filter=lfs diff=lfs merge=lfs -text
+data/Departamentos_venta_2018.dbf filter=lfs diff=lfs merge=lfs -text
+docs/data/Departamentos_venta_2019.dbf filter=lfs diff=lfs merge=lfs -text
+docs/data/Departamentos_venta_2018.dbf filter=lfs diff=lfs merge=lfs -text
