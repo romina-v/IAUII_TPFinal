@@ -1,7 +1,7 @@
 ---
-title: "Instrumentos de Análisis Urbano II - Romina Violante"
+title: "Instrumentos de Análisis Urbano II - Trabajo Final"
 description: |
-  Bienvenidos a la página! Clickeen en Trabajo Final para visualizar el TP completo.
+  ¡Bienvenidos a la página! Clickeen en Trabajo Final para visualizar el TP completo.
 site: distill::distill_website
 ---
 
@@ -15,4 +15,6 @@ knitr::opts_chunk$set(echo = FALSE)
 # https://rstudio.github.io/distill/publish_website.html#github-pages
 
 ```
+
+![](logo.jpg)
 

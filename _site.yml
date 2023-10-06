@@ -1,8 +1,10 @@
 name: "IAUII_TPFinal"
-title: "Instrumentos de Análisis Urbano II - Romina Violante"
-description: Trabajo Final de Romina Violante de la materia Instrumnetos de Análisis Urbano IIde MEU
+title: "Instrumentos de Análisis Urbano II - Trabajo Final"
+description: Trabajo Final de Romina Violante de la materia Instrumentos de Análisis Urbano II de MEU
 output_dir : "docs"
 navbar:
+  logo:
+    image: https://png.pngtree.com/element_our/20200702/ourlarge/pngtree-data-statistics-line-chart-png-free-drawing-image_2296425.jpg
   right:
     - text: "Home"
       href: index.html
@@ -11,5 +13,5 @@ navbar:
     - text: "Trabajo Final"
       href: trabajo_final.html
 output: distill::distill_article
- 
-css: "styles.css"
+
+  
