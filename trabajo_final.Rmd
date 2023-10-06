@@ -14,15 +14,15 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Microcentro porteño: propiedades en venta desde 2015 a 2019
 
-** Presentación del tema **
+#### Presentación del tema 
 
 Analizar los inmuebles en venta de la ciudad de Buenos Aires durante el período 2015 a 2019, en específico, observando el microcentro porteño durante el período y comparandolo con los demás barrios. Este recorte espacial y temporal surge por la necesidad de estudiar el fenómeno del vaciamiento porteño desde 2015 ya que este fue el tema que elegí para desarrollar en mi tesis. Creo que estos datos podrían ser de ayuda para explicar el fenómeno.
 
-** Ubicación **
+#### Ubicación 
 
 La ubicación de los datos de este trabajo serán en la Ciudad Autónoma de Buenos Aires y se estudiarán en relación a su microcentro.
 
-** Fuentes **
+#### Fuentes 
 
 Todos los datos de Trabajo fueron importados del portal de datos abiertos de la Ciudad de Buenos Aires: https://data.buenosaires.gob.ar/dataset/
 Los mismos son:
@@ -34,7 +34,7 @@ Los mismos son:
 - Departamentos en venta 2019
 
 
-** Estudio de la información adquirida **
+#### Estudio de la información adquirida 
 
 Primero activaré las librerías que necesito para trabajar.
 
@@ -48,25 +48,23 @@ library(dplyr)
 Para empezar haré una comparación de la cantidad de inmuebles vendidos en la Ciudad de Buenos Aires desde 2015 a 2019.
 Lo primero que haré será abrir mis datasets para ver el tipo de información con la que cuento y realizar la limpieza y orden pertinente de los datos:
 
-** AÑO 2015 **
+##### AÑO 2015 
 
 ```{r}
 ventas_2015<-st_read("data/deptos_2015.shp",
                  stringsAsFactors =TRUE,
                  options ="ENCODING=latin1")
 ```
+Observo un resumen de mis datos del Año 2015:
 
 ```{r}
 summary (ventas_2015)
 ```
 
 Me quedo con la información que considero importante y ordeno nombres:
-```{r}
-ventas_2015_limpio <- select(ventas_2015, DIRECCION, BARRIOS, geometry)
-```
 
 ```{r}
-summary(ventas_2015_limpio)
+ventas_2015_limpio <- select(ventas_2015, DIRECCION, BARRIOS, geometry)
 ```
 
 ```{r}
@@ -77,16 +75,23 @@ ventas_2015_limpio$BARRIOS <- sub("MONTSERRAT", "MONSERRAT", ventas_2015_limpio$
 grafico_2015 <- ventas_2015_limpio %>% st_drop_geometry()
 ```
 
+```{r}
+summary(ventas_2015_limpio)
+```
+
 Calculo la cantidad de departamentos en venta:
+
 ```{r}
 grafico_2015 <- grafico_2015 %>% 
   group_by(BARRIOS) %>% 
   summarise(DIRECCION=n()) %>% 
   rename(CANTIDAD_VENTAS=DIRECCION)
 ```
+```{r}
+summary(grafico_2015)
+```
 
-
-** AÑO 2016 **
+##### AÑO 2016 
 
 ```{r}
 ventas_2016<-st_read("data/2016_deptos_venta.shp",
@@ -95,7 +100,14 @@ ventas_2016<-st_read("data/2016_deptos_venta.shp",
 
 ```
 
+Cargo mi dataset y observo la información con la que cuento:
+
+```{r}
+summary(ventas_2015)
+```
+
 Vuelvo a hacer mi selección de datos:
+
 ```{r}
 ventas_2016_limpio <- select(ventas_2016, DIRECCION, BARRIO_1) 
 ```
@@ -112,6 +124,10 @@ ventas_2016_limpio <- ventas_2016_limpio %>%
 
 ```{r}
 ventas_2016_limpio <- ventas_2016_limpio %>% st_drop_geometry()
+```
+
+```{r}
+summary(ventas_2016_limpio)
 ```
 
 Calculo la cantidad de departamentos en venta:
@@ -133,14 +149,22 @@ nueva_fila <- data.frame(
 grafico_2016 <- rbind(grafico_2016, nueva_fila)
 ```
 
+```{r}
+summary(grafico_2016)
+```
 
-** AÑO 2017 **
+##### AÑO 2017 
 
 ```{r}
 ventas_2017<-st_read("data/Departamentos_venta_2017.shp",
                  stringsAsFactors =TRUE,
                  options ="ENCODING=latin1")
 
+```
+Nuevamente, cargo el dataset del año y observo la información con la que cuento:
+
+```{r}
+summary(ventas_2017)
 ```
 
 Me quedo con la información que considero importante y ordeno nombres:
@@ -159,6 +183,10 @@ ventas_2017_limpio <-rename ( ventas_2017_limpio, BARRIOS=BARRIO) %>%
 ventas_2017_limpio <- ventas_2017_limpio %>% st_drop_geometry()
 ```
 
+```{r}
+summary(ventas_2017_limpio)
+```
+
 Calculo la cantidad de departamentos en venta:
 
 ```{r}
@@ -168,8 +196,11 @@ grafico_2017 <- ventas_2017_limpio %>%
   rename(CANTIDAD_VENTAS=MES)
 ```
 
+```{r}
+summary(grafico_2017)
+```
 
-** AÑO 2018 **
+##### AÑO 2018 
 
 ```{r}
 ventas_2018<-st_read("data/Departamentos_venta_2018.shp",
@@ -178,7 +209,13 @@ ventas_2018<-st_read("data/Departamentos_venta_2018.shp",
 
 ```
 
-Me ORDENO la información que considero importante:
+Cargo el dataset del año 2018 y observo su contenido:
+
+```{r}
+summary(ventas_2018)
+```
+
+Me ordeno la información que considero importante:
 
 ```{r}
 ventas_2018_limpio <- select(ventas_2018, DIRECCION, BARRIO_1)
@@ -200,6 +237,11 @@ ventas_2018_limpio <- ventas_2018_limpio %>%
 ventas_2018_limpio <- ventas_2018_limpio %>% st_drop_geometry()
 ```
 
+```{r}
+summary(ventas_2018_limpio)
+```
+
+
 Calculo la cantidad de departamentos en venta:
 
 ```{r}
@@ -209,13 +251,24 @@ grafico_2018 <- ventas_2018_limpio %>%
   rename(CANTIDAD_VENTAS=DIRECCION)
 ```
 
-** AÑO 2019 **
+```{r}
+summary(grafico_2018)
+```
+
+
+##### AÑO 2019 
 
 ```{r}
 ventas_2019<-st_read("data/Departamentos_venta_2019.shp",
                  stringsAsFactors =TRUE,
                  options ="ENCODING=latin1")
 
+```
+
+Por último cargo el dataset del año 2019 y lo analizo:
+
+```{r}
+summary(ventas_2019)
 ```
 
 Selecciono y ordeno mi información:
@@ -255,6 +308,9 @@ ventas_2019_limpio <- ventas_2019_limpio %>%
 ventas_2019_grafico <- ventas_2019_limpio %>% st_drop_geometry()
 ```
 
+```{r}
+summary(ventas_2019_grafico)
+```
 
 Calculo la cantidad de departamentos en venta:
 
@@ -263,6 +319,10 @@ grafico_2019 <- ventas_2019_grafico %>%
   group_by(BARRIOS) %>% 
   summarise(DIRECCION=n()) %>% 
   rename(CANTIDAD_VENTAS=DIRECCION)
+```
+
+```{r}
+summary(grafico_2019)
 ```
 
 Ahora para mi comparación saco un promedio de la cantidad de departamentos vendidos por año y creo mi gráfico:
@@ -412,10 +472,11 @@ ggplot() +
   scale_fill_distiller(palette = "Spectral")
 ```
 
-Podemos percibir pequeños cambios en cuanto a los barrios con mayores propiedades en venta en comparación con 2015. Hay una baja en cuanto a los barrios pertenecientes al microcentro y un cambio en el barrio considerado puntero. Este trabajo servirá de puntapie para evaluar estos motivos, si es que se trata de una estrategia de venta, esperando a que los precios de las propiedades suban o si hay un cambio en los barrios más demandados. Lo que se puede decir es que la oferta fue creciendo a lo largo del tiempo.
+Podemos percibir pequeños cambios en cuanto a los barrios con mayores propiedades en venta en comparación con 2015. Hay una baja en cuanto a los barrios pertenecientes al microcentro y un cambio en el barrio considerado puntero. 
 
+#### CONCLUSIÓN 
 
+Con el estudio realizado podemos ver como la cantidad de propiedades en venta fueron variando a lo largo del tiempo, al igual que el barrio con mayor cantidad de ellas. 
+La cantidad de departamentos en venta en los barrios que componen el microcentro también fueron disminuyendo un poco y el estudio de porque así lo hicieron es algo que se podría estudiar en el futuro ya que afecta a la oferta de estos y por lo tanto podría estar relacionado con su vaciamiento.
 
-
-
-
+Este trabajo servirá de puntapie para evaluar estos motivos, si es que se trata de una estrategia de venta, esperando a que los precios de las propiedades suban o si hay un cambio en los barrios más demandados. Lo que se puede decir es que la oferta general de la ciudad fue creciendo a lo largo del tiempo.
