@@ -1,5 +1,5 @@
 ---
-title: "Proyecto Final IAUII"
+title: "Proyecto Final"
 description: |
   Trabajo Final de Romina Violante de la materia de Analisis Urbano II de la MEU
 author:
