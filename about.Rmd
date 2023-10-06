@@ -8,4 +8,4 @@ description: |
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Su creadora es Romina Violante, arquitecta de la UBA y estudiante actual de la Maestría en Economía Urbana en la Universidad Torcuato Di Tella.
+Su creadora es Romina Violante, Arquitecta de la UBA y estudiante actual de la Maestría en Economía Urbana en la Universidad Torcuato Di Tella.
