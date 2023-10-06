@@ -36,7 +36,7 @@ Los mismos son:
 
 #### Estudio de la información adquirida 
 
-Primero activaré las librerías que necesito para trabajar.
+Primero, activaré las librerías que necesito para trabajar.
 
 ```{r}
 library(tidyverse)
@@ -45,8 +45,8 @@ library(sf)
 library(dplyr)
 ```
 
-Para empezar haré una comparación de la cantidad de inmuebles vendidos en la Ciudad de Buenos Aires desde 2015 a 2019.
-Lo primero que haré será abrir mis datasets para ver el tipo de información con la que cuento y realizar la limpieza y orden pertinente de los datos:
+Para empezar, haré una comparación de la cantidad de inmuebles vendidos en la Ciudad de Buenos Aires desde 2015 a 2019.
+Lo primero que haré, será abrir mis datasets para ver el tipo de información con la que cuento y realizar la limpieza y orden pertinente de los datos:
 
 ##### AÑO 2015 
 
@@ -265,7 +265,7 @@ ventas_2019<-st_read("data/Departamentos_venta_2019.shp",
 
 ```
 
-Por último cargo el dataset del año 2019 y lo analizo:
+Por último, cargo el dataset del año 2019 y lo analizo:
 
 ```{r}
 summary(ventas_2019)
@@ -325,7 +325,7 @@ grafico_2019 <- ventas_2019_grafico %>%
 summary(grafico_2019)
 ```
 
-Ahora para mi comparación saco un promedio de la cantidad de departamentos vendidos por año y creo mi gráfico:
+Ahora, para mi comparación, saco un promedio de la cantidad de departamentos vendidos por año y creo mi gráfico:
 
 ```{r}
 promedio_2015 <- mean(grafico_2015$CANTIDAD_VENTAS)
@@ -363,7 +363,7 @@ ggplot(dptos_2015_2019, aes(x = Año, y = Promedio)) +
 
 Se observa como crece la cantidad de departamentos en venta a lo largo de estos años.
 
-A partir de este gráfico decidí quedarme con el 2015 y el 2019 para poder estudiar sus datos más detenidamente:
+A partir de este gráfico, decidí quedarme con el 2015 y el 2019 para poder estudiar sus datos más detenidamente:
 
 En cuanto al 2015, hago un pequeño estudio de las propiedades en venta según barrios. Mis barrios críticos serán Monserrat, San Nicolás y Retiro por tomar la zona del microcentro porteño.
 

@@ -1,7 +1,7 @@
 ---
 title: "Instrumentos de Análisis Urbano II - Romina Violante"
 description: |
-  Welcome to the website. I hope you enjoy it!
+  Bienvenidos a la página! Clickeen en Trabajo Final para visualizar el TP completo
 site: distill::distill_website
 ---
 

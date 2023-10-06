@@ -1,10 +1,11 @@
 ---
 title: "About this site"
 description: |
-  Some additional details about the website
+  Desarrollada para aprobar el trabajo final :)
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+Su creadora es Romina Violante, arquitecta de la UBA y estudiante actual de la Maestría en Economía Urbana en la Universidad Torcuato Di Tella.
